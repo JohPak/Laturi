@@ -9,7 +9,7 @@ const bodyParser = require('body-parser');
 const express = require('express')
 const fs = require("fs"); //filesystem
 const app = express()
-const port = 3000
+const port = 8080
 
 //CONTROLLERS
 const main_controller = require("./controllers/main_controller")

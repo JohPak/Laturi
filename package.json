@@ -12,7 +12,9 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "cli": "^1.0.1",
     "express": "^4.17.1",
+    "heroku": "^7.47.3",
     "image-downloader": "^4.0.1",
     "node-html-parser": "^2.0.0"
   },
