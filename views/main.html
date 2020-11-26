@@ -1,0 +1,184 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <link rel="stylesheet" type="text/css" href="../css/loader.css" />
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+
+    <!-- LOADER ANIMATION -->
+    <div class="loader" id="loader">
+    <div class="lds-default"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+    </div>
+    <!-- END LOADER -->
+
+    <div class="topbar">
+      <img
+        class="logo"
+        src="../img/bandit.png"
+        alt="Kuvanlainauspalvelu"
+        height="50px"
+      />
+      <span>Kuvanlainauspalvelu</span>
+    </div>
+
+
+
+    <div class="wrapper">
+      <div class="leftbar">
+
+        <button id="button-tammer" onClick="transferTammer()">Hae Tammerilta</button><br /><br>
+        <button id="button-kesko" onClick="transferKesko()">Hae Keskolta</button><br /><br />
+        <textarea name="list" id="eanlist" autofocus>6410413036246</textarea>
+      </div>
+      <div id="urlit">Lisää enarit ja valitse kuvapankki</div>
+    </div>
+
+    <script src="../modules/getimages.js"></script>
+
+    <script>
+      function transferKesko() {
+        let eanlist = document.getElementById("eanlist").value.split("\n");
+        document.getElementById("urlit").innerHTML = getKesko(eanlist);
+      }
+
+      function transferTammer() {
+        let eanlist = document
+          .getElementById("eanlist") // hakee eanlist-id:llä olevasta
+          .value.split("\n") // sisällön ja jakaa sen riveille
+          .map((x) => x.trim()); // trimmaa välilyönnit pois
+
+        // disabloidaan eanlist-textarea ja hakunappi siksi aikaa kun haetaan tietoja
+        document.getElementById("eanlist").setAttribute("disabled","disabled");
+        document.getElementById("button-tammer").setAttribute("disabled","disabled");
+        document.getElementById("button-kesko").setAttribute("disabled","disabled");
+        document.getElementById("loader").style.display="flex";
+
+        let requestObj = {
+          source: "tammertukku",
+          eanlist: eanlist,
+        };
+        getImages(requestObj, (kuvatJaKuvauksetTaulukko) => {
+          console.log(kuvatJaKuvauksetTaulukko);
+          // document.getElementById("urlit").innerHTML = getTammer(eanlist);
+
+          // poistetaan eanlist-textarean ja button-tammerin disablointi
+          document.getElementById("eanlist").removeAttribute("disabled");
+          document.getElementById("button-tammer").removeAttribute("disabled");
+          document.getElementById("button-kesko").removeAttribute("disabled");
+          document.getElementById("loader").style.display="none";
+
+
+          document.getElementById("urlit").innerHTML = ""; // tyhjätään ohjeteksti pois
+          for (let index = 0; index < kuvatJaKuvauksetTaulukko.length; index++) {
+
+            document.getElementById("urlit").innerHTML += 
+                  `<div class="tuotekuvadiv">
+                  <p class="product-title">${kuvatJaKuvauksetTaulukko[index].title}</p>
+                  <p class="tuotekuvaean" onClick="this.select();">${kuvatJaKuvauksetTaulukko[index].ean}</p>
+                  <p class="tuotekuvaean" onClick="this.select();">${kuvatJaKuvauksetTaulukko[index].description}</p>
+                  <a href="https://www.${kuvatJaKuvauksetTaulukko[index].images[0]}" target="_blank">
+                  <img src="https://www.${kuvatJaKuvauksetTaulukko[index].images[0]}" class="tuotekuva" title="${kuvatJaKuvauksetTaulukko[index].images[0]}" download="${kuvatJaKuvauksetTaulukko[index].ean}"></a>
+                  
+                  <button onclick="download('${kuvatJaKuvauksetTaulukko[index].ean}')">Lataa</button>
+                  
+                  `;
+          
+                  // tarkistetaan onko kuvia enemmän kuin yksi per enari
+                  if (kuvatJaKuvauksetTaulukko[index].images.length > 0) {
+                      for (let x = 1; x <kuvatJaKuvauksetTaulukko[index].images.length; x++) {
+                        document.getElementById("urlit").innerHTML +=
+                        `<a href="https://www.${kuvatJaKuvauksetTaulukko[index].images[x]}" target="_blank">
+                        <img src="https://www.${kuvatJaKuvauksetTaulukko[index].images[x]}" class="tuotelisakuva" title="${kuvatJaKuvauksetTaulukko[index].images[x]}" download="${kuvatJaKuvauksetTaulukko[index].ean}"></a>`
+                      }
+                  }
+                  document.getElementById("urlit").innerHTML += 
+                  `</div><!-- tuotekuvadiv -->`;
+
+                
+                } //end for
+
+        });
+      }
+
+      function download(eanCode){
+        // NÄYTÄ LATAUSPLALURA
+        document.getElementById("loader").style.display="flex";
+
+    return new Promise(resolve => { // päättää homman vasta kun kutsu on valmis
+        let x = new XMLHttpRequest(); // uusi http-clientti (voi tehdä http-kutsun)
+        x.onreadystatechange = () => { // eventti. Kertoo onko yhteys auki, kii vai mitä
+            if(x.readyState == 4){ // 4 = kutsu on valmis
+
+              //piilota latauspallura
+              document.getElementById("loader").style.display="none";
+                resolve(); // sanoo että nyt päätetään
+            }
+        }
+        let obj = {enarilomakkeelta: eanCode};
+
+        x.open("POST", "/lataa"); // avaa yhdeyten, tekee post-kutsun annettuun osoitteeseen
+        x.setRequestHeader("Content-Type", "application/json");
+        
+        x.send(JSON.stringify(obj)); // lähettää post-end pointtiin (kuuntelijalle)
+    });
+}
+
+
+    </script>
+  </body>
+</html>
+
+<!-- /*
+6410413036246
+6410412756718
+6410411020735
+6410412756695
+6410413287396
+6410416039190
+6410410102043
+6410411020421
+6410411020452
+6410412745248
+6410413287273
+
+6409100078249
+6408430408412
+6408430408450
+6408430408405
+6412000081202
+6407830039172
+8714100773482
+6407810014175
+6411200108504
+8718114829661
+
+
+
+6410412758545
+6410413008144
+6410412758163
+6410413137790
+6410412640017
+6410413263048
+6410413263031
+6410413008076
+6410413137844
+6410413138001
+6410413263000
+6410413008182
+6410413137424
+6410412740519
+6410413263178
+6410413138018
+6410413137837
+6410413007840
+6410413263109
+6410413137868
+6410413263116
+6410412911735
+*/
+    
+
+
+  -->

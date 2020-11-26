@@ -1,0 +1,88 @@
+body {
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  background-color: #b3c9d6;
+}
+.wrapper {
+  /* border: 1px solid black; */
+  overflow: hidden;
+  display: flex;
+}
+.topbar {
+  background-color: #92b0c2;
+  color: white;
+  font-size: 2em;
+  padding-left: 15px;
+  height: 70px;
+}
+span {
+  position: absolute;
+  margin-top: 16px;
+  margin-left: 11px;
+}
+.logo {
+  margin-top: 10px;
+}
+.leftbar {
+  width: 250px;
+  float: left;
+  padding: 20px;
+}
+#urlit {
+  height: 90%;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20px;
+}
+
+button {
+  height: 40px;
+  width: 250px;
+}
+a {
+  color: #4d4d4d;
+}
+
+/* textarea */
+#eanlist {
+  height: 50vh;
+  width: 100%;
+  padding: 5px;
+}
+.tuotekuvadiv {
+  /* border: 1px solid #92b0c2; */
+  margin: 0;
+  /* min-width: 150px; */
+  min-width:100%;
+  max-width: 150px;
+  min-height: 150px;
+  margin-bottom: 15px;
+}
+.product-title {
+  text-align: left;
+  font-weight: 600;
+  margin:0;
+  border-top: 1px solid #7aa0b7;
+  padding-top: 11px;
+  user-select: all;
+}
+.tuotekuva {
+  max-width: 150px;
+  max-height: 150px;
+  padding-top: 10px;
+  /* vertical-align: middle; */
+  /* padding: 10px; */
+  /* box-sizing: border-box; ignooraa paddingit jotta koko pysyy samana*/
+}
+.tuotelisakuva {
+  max-width: 70px;
+  max-height: 70px;
+  padding-right: 10px;
+  box-sizing: border-box; /*ignooraa paddingit jotta koko pysyy samana*/
+  padding-bottom: 14px;
+}
+.tuotekuvaean {
+  text-align: left;
+  font-size: 0.8em;
+  margin: 6px 0px;
+  user-select: all;
+}
