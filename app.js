@@ -1,7 +1,7 @@
 // node app.js käynnistää serverin
 //
 // Käynnistä serveri komenolla npm run start
-// Kehitystyön aikana voidaan serveri käynnistää myös komennolla npmrunstart-dev, jolloin serveri käynnistyy automaattisesti uudestaan, kun tiedostoihin tulee muutoksia
+// Kehitystyön aikana voidaan serveri käynnistää myös komennolla npm run start-dev, jolloin serveri käynnistyy automaattisesti uudestaan, kun tiedostoihin tulee muutoksia
 //
 // CTRL + C pysäyttää serverin
 
@@ -21,10 +21,11 @@ const main_controller = require("./controllers/main_controller")
 //__difname on paikka jossa olen kun käynnistän serverin
 app.use(express.static(__dirname));
 app.use(bodyParser.json()); //osaa lukea jsonista bodyn
-app.use(bodyParser.urlencoded({extended:true})); //osaa lukea url-enkoodattuja juttuja
+app.use(bodyParser.urlencoded({ extended: true })); //osaa lukea url-enkoodattuja juttuja
 
 app.get('/', main_controller.get_main);
 app.post('/lataa', main_controller.downloadImage);
+app.post('/lataatammer', main_controller.downloadImageTammer);
 app.post('/get', main_controller.get_images);
 
 // app.get('/', (req, res) => {

@@ -36,7 +36,7 @@ span {
 
 button {
   height: 40px;
-  width: 250px;
+  width: 200px;
 }
 a {
   color: #4d4d4d;
@@ -52,7 +52,7 @@ a {
   /* border: 1px solid #92b0c2; */
   margin: 0;
   /* min-width: 150px; */
-  min-width:100%;
+  min-width: 100%;
   max-width: 150px;
   min-height: 150px;
   margin-bottom: 15px;
@@ -60,7 +60,7 @@ a {
 .product-title {
   text-align: left;
   font-weight: 600;
-  margin:0;
+  margin: 0;
   border-top: 1px solid #7aa0b7;
   padding-top: 11px;
   user-select: all;
@@ -69,9 +69,10 @@ a {
   max-width: 150px;
   max-height: 150px;
   padding-top: 10px;
-  /* vertical-align: middle; */
+  vertical-align: bottom;
   /* padding: 10px; */
-  /* box-sizing: border-box; ignooraa paddingit jotta koko pysyy samana*/
+  /*box-sizing: border-box;  ignooraa paddingit jotta koko pysyy samana */
+  padding-right: 10px;
 }
 .tuotelisakuva {
   max-width: 70px;
@@ -85,4 +86,29 @@ a {
   font-size: 0.8em;
   margin: 6px 0px;
   user-select: all;
+}
+/* POPUPS */
+.popup-box {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 6px;
+  max-height: 80vh;
+  font-size: 1.6em;
+
+  -webkit-box-shadow: 0px 0px 40px -5px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 0px 0px 40px -5px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 0px 40px -5px rgba(0, 0, 0, 0.5);
+}
+
+.popup-background {
+  position: fixed;
+  /* background-color: rgba(0, 0, 0, 0.5); */
+  display: none;
+  justify-content: center;
+  align-items: center;
+  width: 100vw; /* 100% = täydet parentin koosta, 100vw on täydet viewportin koosta */
+  height: 100vh;
+  left: 0;
+  top: 0;
+  z-index: 999;
 }

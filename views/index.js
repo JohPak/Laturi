@@ -21,103 +21,103 @@ function get_tammer() {
         document.getElementById("urlit").innerHTML = "";
         finals = "";
     }
-    
-   
-        // haetaan textareasta kaikki rivit ja jaetaan ne arrayhyn
-        eans = document.getElementById("eanlist").value.split('\n');
-        
-        //talletetaan enarin lopusta 6. ja 7. merkit urlia varten
-        for (let index = 0; index < this.eans.length; index++) {
-            if (this.eans[index].charAt(this.eans[index].length-7) == "0") {
-                url_2[index] = this.eans[index].charAt(this.eans[index].length-6) + this.eans[index].charAt(this.eans[index].length-5);
-                fullurls[index] = baseurl + url_2[index];
-            }
-            else {
-                url_2[index] = this.eans[index].charAt(this.eans[index].length-7) + this.eans[index].charAt(this.eans[index].length-6);
-                fullurls[index] = baseurl + url_2[index];
-            }
-        }
-        //talletetaan enarin lopusta 5. merkki urlia varten
-        for (let index = 0; index < this.eans.length; index++) {
-            if (this.eans[index].charAt(this.eans[index].length-7) == "0") {
-                url_1[index] = this.eans[index].charAt(this.eans[index].length-4)
-                fullurls[index] += "/" + url_1[index];
-            }
-            else {
-                url_1[index] = this.eans[index].charAt(this.eans[index].length-5)
-                fullurls[index] += "/" + url_1[index];
-            }
 
+
+    // haetaan textareasta kaikki rivit ja jaetaan ne arrayhyn
+    eans = document.getElementById("eanlist").value.split('\n');
+
+    //talletetaan enarin lopusta 6. ja 7. merkit urlia varten
+    for (let index = 0; index < this.eans.length; index++) {
+        if (this.eans[index].charAt(this.eans[index].length - 7) == "0") {
+            url_2[index] = this.eans[index].charAt(this.eans[index].length - 6) + this.eans[index].charAt(this.eans[index].length - 5);
+            fullurls[index] = baseurl + url_2[index];
         }
-        //talletetaan enarin lopusta 6 toiseksi vipaa merkkiä urlia varten
-        for (let index = 0; index < this.eans.length; index++) {
-            // jos tuotenron eka numero on nolla, jätetään se pois
-            if (this.eans[index].charAt(this.eans[index].length-7) == "0") {
-                url_6[index] =
-                this.eans[index].charAt(this.eans[index].length-6) +
-                this.eans[index].charAt(this.eans[index].length-5) +
-                this.eans[index].charAt(this.eans[index].length-4) +
-                this.eans[index].charAt(this.eans[index].length-3) +
-                this.eans[index].charAt(this.eans[index].length-2);    
-                fullurls[index] += "/" + url_6[index] + ".jpg";
-            }
-            else {
-                
-                url_6[index] =
-                this.eans[index].charAt(this.eans[index].length-7) +
-                this.eans[index].charAt(this.eans[index].length-6) +
-                this.eans[index].charAt(this.eans[index].length-5) +
-                this.eans[index].charAt(this.eans[index].length-4) +
-                this.eans[index].charAt(this.eans[index].length-3) +
-                this.eans[index].charAt(this.eans[index].length-2);
-                fullurls[index] += "/" + url_6[index] + ".jpg";
-            }
+        else {
+            url_2[index] = this.eans[index].charAt(this.eans[index].length - 7) + this.eans[index].charAt(this.eans[index].length - 6);
+            fullurls[index] = baseurl + url_2[index];
         }
-        
-        // muodostetaan a href-linkki
-        for (let index = 0; index < fullurls.length; index++) {
-            this.finals += "<br><img src=\"" + fullurls[index] + "\" download=" + this.eans[index] + ".jpg> ";
-            this.finals += "<a href=\"" + fullurls[index] + "\">" + fullurls[index] + "</a>";
+    }
+    //talletetaan enarin lopusta 5. merkki urlia varten
+    for (let index = 0; index < this.eans.length; index++) {
+        if (this.eans[index].charAt(this.eans[index].length - 7) == "0") {
+            url_1[index] = this.eans[index].charAt(this.eans[index].length - 4)
+            fullurls[index] += "/" + url_1[index];
         }
-        
-        document.getElementById("urlit").innerHTML = this.finals;
-        return this.finals;
-        
-        
+        else {
+            url_1[index] = this.eans[index].charAt(this.eans[index].length - 5)
+            fullurls[index] += "/" + url_1[index];
+        }
+
+    }
+    //talletetaan enarin lopusta 6 toiseksi vipaa merkkiä urlia varten
+    for (let index = 0; index < this.eans.length; index++) {
+        // jos tuotenron eka numero on nolla, jätetään se pois
+        if (this.eans[index].charAt(this.eans[index].length - 7) == "0") {
+            url_6[index] =
+                this.eans[index].charAt(this.eans[index].length - 6) +
+                this.eans[index].charAt(this.eans[index].length - 5) +
+                this.eans[index].charAt(this.eans[index].length - 4) +
+                this.eans[index].charAt(this.eans[index].length - 3) +
+                this.eans[index].charAt(this.eans[index].length - 2);
+            fullurls[index] += "/" + url_6[index] + ".jpg";
+        }
+        else {
+
+            url_6[index] =
+                this.eans[index].charAt(this.eans[index].length - 7) +
+                this.eans[index].charAt(this.eans[index].length - 6) +
+                this.eans[index].charAt(this.eans[index].length - 5) +
+                this.eans[index].charAt(this.eans[index].length - 4) +
+                this.eans[index].charAt(this.eans[index].length - 3) +
+                this.eans[index].charAt(this.eans[index].length - 2);
+            fullurls[index] += "/" + url_6[index] + ".jpg";
+        }
     }
 
+    // muodostetaan a href-linkki
+    for (let index = 0; index < fullurls.length; index++) {
+        this.finals += "<br><img src=\"" + fullurls[index] + "\" download=" + this.eans[index] + ".jpg> ";
+        this.finals += "<a href=\"" + fullurls[index] + "\">" + fullurls[index] + "</a>";
+    }
+
+    document.getElementById("urlit").innerHTML = this.finals;
+    return this.finals;
+
+
+}
+
 function get_kesko() {
-        // tyhjätään loota, jos ei oo jo tyhjä
-        if (this.finals != "") {
-            document.getElementById("urlit").innerHTML = "";
-            this.finals = "";
+    // tyhjätään loota, jos ei oo jo tyhjä
+    if (this.finals != "") {
+        document.getElementById("urlit").innerHTML = "";
+        this.finals = "";
+    }
+
+    // haetaan textareasta kaikki rivit ja jaetaan ne arrayhyn
+    this.eans = document.getElementById("eanlist").value.split('\n');
+
+    // muodostetaan a href-linkki
+    for (let index = 0; index < this.eans.length; index++) {
+        this.finals += `<br><a href="${keskourl} + ${this.eans[index]}\" download=\"" + this.eans[index] + ".png\">" + "<img src=\"" + keskourl + this.eans[index] + "\" crossorigin=\"anonymous\" title=\"" + this.eans[index] + ".png\"> `;
+
+        // this.finals += "<br><img src=\"" + keskourl + this.eans[index] + "\" crossorigin=\"anonymous\"> ";
+        // this.finals += "<a href=\"" + keskourl + this.eans[index] + "\">" + this.eans[index] + "</a>";
+
+        //ladataan koneelle
+        const options = {
+            url: this.eans[index],
+            dest: '/Users/johannapakkala/'      // will be saved to /path/to/dest/image.jpg
         }
 
-         // haetaan textareasta kaikki rivit ja jaetaan ne arrayhyn
-         this.eans = document.getElementById("eanlist").value.split('\n');
-
-        // muodostetaan a href-linkki
-        for (let index = 0; index < this.eans.length; index++) {
-            this.finals += "<br><a href=\""+ keskourl + this.eans[index]+"\" download=\""+ this.eans[index] +".png\">"+"<img src=\"" + keskourl + this.eans[index] + "\" crossorigin=\"anonymous\" download=\""+ this.eans[index] +".png\"> ";
-
-            // this.finals += "<br><img src=\"" + keskourl + this.eans[index] + "\" crossorigin=\"anonymous\"> ";
-            // this.finals += "<a href=\"" + keskourl + this.eans[index] + "\">" + this.eans[index] + "</a>";
-            
-            //ladataan koneelle
-            const options = {
-                url: this.eans[index],
-                dest: '/Users/johannapakkala/'      // will be saved to /path/to/dest/image.jpg
-            }
-            
-            download.image(options)
+        download.image(options)
             .then(({ filename }) => {
                 console.log('Saved to', filename)   // saved to /path/to/dest/image.jpg
             })
             .catch((err) => console.error(err))
-        }
-        
-        document.getElementById("urlit").innerHTML = this.finals;
-        return this.finals;
+    }
+
+    document.getElementById("urlit").innerHTML = this.finals;
+    return this.finals;
 }
 
 module.exports.get_tammer = get_tammer;

@@ -5,12 +5,30 @@
     <meta charset="UTF-8" />
   </head>
   <body>
-
     <!-- LOADER ANIMATION -->
     <div class="loader" id="loader">
-    <div class="lds-default"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+      <div class="lds-default">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
     </div>
     <!-- END LOADER -->
+
+    <!-- START MESSAGE -->
+    <div class="popup-background">
+      <div id="message" class="popup-box">Lataus suoritettu</div>
+    </div>
+    <!-- END MESSAGE -->
 
     <div class="topbar">
       <img
@@ -22,13 +40,11 @@
       <span>Kuvanlainauspalvelu</span>
     </div>
 
-
-
     <div class="wrapper">
       <div class="leftbar">
-
-        <button id="button-tammer" onClick="transferTammer()">Hae Tammerilta</button><br /><br>
+        <button id="button-tammer" onClick="transferTammer()">Hae Tammerilta</button><br /><br />
         <button id="button-kesko" onClick="transferKesko()">Hae Keskolta</button><br /><br />
+        <button id="button-tokmanni" onClick="transferTokmanni()">Hae Tokmannilta</button><br /><br />
         <textarea name="list" id="eanlist" autofocus>6410413036246</textarea>
       </div>
       <div id="urlit">Lisää enarit ja valitse kuvapankki</div>
@@ -39,7 +55,13 @@
     <script>
       function transferKesko() {
         let eanlist = document.getElementById("eanlist").value.split("\n");
+        // getKesko() funktio on modules/getimages.js/getKesko()
         document.getElementById("urlit").innerHTML = getKesko(eanlist);
+      }
+
+      function transferTokmanni() {
+        let eanlist = document.getElementById("eanlist").value.split("\n");
+        document.getElementById("urlit").innerHTML = getTokmanni(eanlist);
       }
 
       function transferTammer() {
@@ -49,15 +71,17 @@
           .map((x) => x.trim()); // trimmaa välilyönnit pois
 
         // disabloidaan eanlist-textarea ja hakunappi siksi aikaa kun haetaan tietoja
-        document.getElementById("eanlist").setAttribute("disabled","disabled");
-        document.getElementById("button-tammer").setAttribute("disabled","disabled");
-        document.getElementById("button-kesko").setAttribute("disabled","disabled");
-        document.getElementById("loader").style.display="flex";
+        document.getElementById("eanlist").setAttribute("disabled", "disabled");
+        document.getElementById("button-tammer").setAttribute("disabled", "disabled");
+        document.getElementById("button-kesko").setAttribute("disabled", "disabled");
+        document.getElementById("loader").style.display = "flex";
 
         let requestObj = {
           source: "tammertukku",
           eanlist: eanlist,
         };
+        // kuvatJaKuvauksetTaulukko tulee image_services.js:stä. Siellä on nuo .ean, .description yms määritelty
+        // getImages-funktio löytyy services/image_services.js:stä (huom! EI modules/getimages.js)
         getImages(requestObj, (kuvatJaKuvauksetTaulukko) => {
           console.log(kuvatJaKuvauksetTaulukko);
           // document.getElementById("urlit").innerHTML = getTammer(eanlist);
@@ -66,65 +90,87 @@
           document.getElementById("eanlist").removeAttribute("disabled");
           document.getElementById("button-tammer").removeAttribute("disabled");
           document.getElementById("button-kesko").removeAttribute("disabled");
-          document.getElementById("loader").style.display="none";
-
+          document.getElementById("loader").style.display = "none";
 
           document.getElementById("urlit").innerHTML = ""; // tyhjätään ohjeteksti pois
-          for (let index = 0; index < kuvatJaKuvauksetTaulukko.length; index++) {
-
-            document.getElementById("urlit").innerHTML += 
-                  `<div class="tuotekuvadiv">
+          for (
+            let index = 0; index < kuvatJaKuvauksetTaulukko.length; index++) {
+            document.getElementById("urlit").innerHTML += `<div class="tuotekuvadiv">
                   <p class="product-title">${kuvatJaKuvauksetTaulukko[index].title}</p>
                   <p class="tuotekuvaean" onClick="this.select();">${kuvatJaKuvauksetTaulukko[index].ean}</p>
                   <p class="tuotekuvaean" onClick="this.select();">${kuvatJaKuvauksetTaulukko[index].description}</p>
+                  <p class="tuotekuvaean" onClick="this.select();">Tammerin tuotenumero: ${kuvatJaKuvauksetTaulukko[index].productnumber}</p>
                   <a href="https://www.${kuvatJaKuvauksetTaulukko[index].images[0]}" target="_blank">
                   <img src="https://www.${kuvatJaKuvauksetTaulukko[index].images[0]}" class="tuotekuva" title="${kuvatJaKuvauksetTaulukko[index].images[0]}" download="${kuvatJaKuvauksetTaulukko[index].ean}"></a>
                   
-                  <button onclick="download('${kuvatJaKuvauksetTaulukko[index].ean}')">Lataa</button>
+                  <button onclick="download('${kuvatJaKuvauksetTaulukko[index].ean}, https://www.${kuvatJaKuvauksetTaulukko[index].images[0]}')" id="latausnappi${kuvatJaKuvauksetTaulukko[index].ean}" title="${kuvatJaKuvauksetTaulukko[index].ean}.jpg">Lataa</button>
                   
                   `;
-          
-                  // tarkistetaan onko kuvia enemmän kuin yksi per enari
-                  if (kuvatJaKuvauksetTaulukko[index].images.length > 0) {
-                      for (let x = 1; x <kuvatJaKuvauksetTaulukko[index].images.length; x++) {
-                        document.getElementById("urlit").innerHTML +=
-                        `<a href="https://www.${kuvatJaKuvauksetTaulukko[index].images[x]}" target="_blank">
-                        <img src="https://www.${kuvatJaKuvauksetTaulukko[index].images[x]}" class="tuotelisakuva" title="${kuvatJaKuvauksetTaulukko[index].images[x]}" download="${kuvatJaKuvauksetTaulukko[index].ean}"></a>`
-                      }
-                  }
-                  document.getElementById("urlit").innerHTML += 
-                  `</div><!-- tuotekuvadiv -->`;
 
-                
-                } //end for
-
+            // tarkistetaan onko kuvia enemmän kuin yksi per enari
+            if (kuvatJaKuvauksetTaulukko[index].images.length > 0) {
+              for (
+                let x = 1;
+                x < kuvatJaKuvauksetTaulukko[index].images.length;
+                x++
+              ) {
+                document.getElementById(
+                  "urlit"
+                ).innerHTML += `<div class="tuotelisakuvadiv"><a href="https://www.${kuvatJaKuvauksetTaulukko[index].images[x]}" target="_blank">
+                        <img src="https://www.${kuvatJaKuvauksetTaulukko[index].images[x]}" class="tuotelisakuva" title="${kuvatJaKuvauksetTaulukko[index].images[x]}" download="${kuvatJaKuvauksetTaulukko[index].ean}_${x+1}"></a>
+                            <button onclick="download('${kuvatJaKuvauksetTaulukko[index].ean}_${x+1}, https://www.${kuvatJaKuvauksetTaulukko[index].images[x]}')" id="latausnappi" title="${kuvatJaKuvauksetTaulukko[index].ean}_${x+1}.jpg">Lataa lisäkuva</button><br></div>
+                        `;
+              }
+            }
+            document.getElementById(
+              "urlit"
+            ).innerHTML += `</div><!-- tuotekuvadiv -->`;
+          } //end for
         });
       }
+      
+      function download(eanCode, url) {
+        // NÄYTÄ LATAUSPALLURA
+        document.getElementById("loader").style.display = "flex";
 
-      function download(eanCode){
-        // NÄYTÄ LATAUSPLALURA
-        document.getElementById("loader").style.display="flex";
-
-    return new Promise(resolve => { // päättää homman vasta kun kutsu on valmis
-        let x = new XMLHttpRequest(); // uusi http-clientti (voi tehdä http-kutsun)
-        x.onreadystatechange = () => { // eventti. Kertoo onko yhteys auki, kii vai mitä
-            if(x.readyState == 4){ // 4 = kutsu on valmis
+        return new Promise((resolve) => {
+          // päättää homman vasta kun kutsu on valmis
+          let x = new XMLHttpRequest(); // uusi http-clientti (voi tehdä http-kutsun)
+          x.onreadystatechange = () => {
+            // eventti. Kertoo onko yhteys auki, kii vai mitä
+            if (x.readyState == 4) {
+              // 4 = kutsu on valmis
 
               //piilota latauspallura
-              document.getElementById("loader").style.display="none";
-                resolve(); // sanoo että nyt päätetään
+              document.getElementById("loader").style.display = "none";
+              // Allaolevat hienot kikkareet ei oikei toiminu usean napin kans
+              // document.getElementById("latausnappi").innerHTML = "VALMIS";
+              // document.getElementById("latausnappi").style.backgroundColor = "#a8d5a8";
+
+              resolve(); // sanoo että nyt päätetään
             }
-        }
-        let obj = {enarilomakkeelta: eanCode};
+          };
+          let obj = { enarilomakkeelta: eanCode, urlilomakkeelta: url }; //nämä välittyy main_controllerille
 
-        x.open("POST", "/lataa"); // avaa yhdeyten, tekee post-kutsun annettuun osoitteeseen
-        x.setRequestHeader("Content-Type", "application/json");
-        
-        x.send(JSON.stringify(obj)); // lähettää post-end pointtiin (kuuntelijalle)
-    });
-}
+          console.log(obj);
+    // jaetaan ean ja url kahdeksi muuttujaksi
+    // ku jostain syystä obj-objektin sisältö on yhtenä pötkönä, pelkkä pilkku välis
+    var index = obj.enarilomakkeelta.indexOf(",");  // Gets the first index where a space occurs
+    var enari = obj.enarilomakkeelta.substr(0, index); // Gets the first part
+    var latausurli = obj.enarilomakkeelta.substr(index + 1);  // Gets the text part
 
+          if (latausurli.includes("tammer") || latausurli.includes("tokmanni"))
+          {
+            x.open("POST", "/lataatammer"); // avaa yhteyden, tekee post-kutsun annettuun osoitteeseen
+          }
+          else {
+            x.open("POST", "/lataa"); // avaa yhteyden, tekee post-kutsun annettuun osoitteeseen
+          }
+          x.setRequestHeader("Content-Type", "application/json");
 
+          x.send(JSON.stringify(obj)); // lähettää post-end pointtiin (kuuntelijalle)
+        });
+      }
     </script>
   </body>
 </html>
@@ -177,8 +223,20 @@
 6410413137868
 6410413263116
 6410412911735
+
+
+
+
+
+6410413036246
+6410412756718
+6410411020735
+6410412756695
+6410413287396
+6410416039190
+6410410102043
+6410411020421
+6410411020452
+6410412745248
 */
-    
-
-
   -->

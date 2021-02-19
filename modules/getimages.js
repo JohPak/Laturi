@@ -11,13 +11,26 @@ const getKesko = function (eanlist) {
 
 }
 
+const getTokmanni = function (eanlist) {
+
+    const tokmanniurl = "https://res.cloudinary.com/tokmanni/image/upload/c_pad,b_white,f_auto,h_1200,w_1200/d_default.png/";
+    let finals = "";
+
+    for (let index = 0; index < eanlist.length; index++) {
+        finals += "<div class=\"tuotekuvadiv\"><a href=\"" + tokmanniurl + eanlist[index] + ".png\"><img src=\"" + tokmanniurl + eanlist[index] + ".png\" class=\"tuotekuva\" title=\"" + tokmanniurl + eanlist[index] + ".png\" download=\"" + eanlist[index] + ".png\"><p class=\"tuotekuvaean\">" + eanlist[index] + ".png<\/p><\/div>";
+    }
+    // console.log(finals);
+    return finals;
+
+}
+
 const getTammer = function (eanlist) {
 
     const tammerurl = "https://www.tammerbrands24h.fi/images/products/";
     let finals = "";
     let url_2 = [];
     let url_1 = [];
-    let url_6 = [];
+    let url_6 = []; // tammerin tuotenumero
     let fullurls = [];
 
     //talletetaan enarin lopusta 6. ja 7. merkit urlia varten
@@ -70,7 +83,9 @@ const getTammer = function (eanlist) {
 
     // muodostetaan a href-linkki
     for (let index = 0; index < fullurls.length; index++) {
-        finals += "<a href=\"" + fullurls[index] + "\" download=\"" + eanlist[index] + "\"><div class=\"tuotekuvadiv\"><img class=\"tuotekuva\" title=\"" + fullurls[index] + "\" src=\"" + fullurls[index] + "\" download=\"" + eanlist[index] + "\"><p class=\"tuotekuvaean\">" + eanlist[index] + "<\/p><\/div><\/a>";
+        // finals += "<a href=\"" + fullurls[index] + "\" download=\"" + eanlist[index] + "\"><div class=\"tuotekuvadiv\"><img class=\"tuotekuva\" title=\"" + fullurls[index] + "\" src=\"" + fullurls[index] + "\" download=\"" + eanlist[index] + "\"><p class=\"tuotekuvaean\">" + eanlist[index] + "<\/p><\/div><\/a>";
+        
+        finals += `<a href="${fullurls[index]}" download="${eanlist[index]}"><div class="tuotekuvadiv"><img class="tuotekuva" title="${fullurls[index]}" src="${fullurls[index]}" download="${eanlist[index]}"><p class="tuotekuvaean">${eanlist[index]}</p></div></a>`;
     }
 
     return finals;
