@@ -43,6 +43,7 @@
     <div class="wrapper">
       <div class="leftbar">
         <button id="button-tammer" onClick="transferTammer()">Hae Tammerilta</button><br /><br />
+        <button id="button-minimani" onClick="transferMinimani()">Hae Minimanilta</button><br /><br />
         <button id="button-kesko" onClick="transferKesko()">Hae Keskolta</button><br /><br />
         <button id="button-tokmanni" onClick="transferTokmanni()">Hae Tokmannilta</button><br /><br />
         <textarea name="list" id="eanlist" autofocus>6410413036246</textarea>
@@ -53,16 +54,75 @@
     <script src="../modules/getimages.js"></script>
 
     <script>
-      function transferKesko() {
+
+      function transferKesko() { // sisältö tulee: modules/getimages.js
+        console.log("Klikattu Keskoa");
         let eanlist = document.getElementById("eanlist").value.split("\n");
+        const keskourl = "https://public.keskofiles.com/f/k-ruoka/product/";
+
         // getKesko() funktio on modules/getimages.js/getKesko()
-        document.getElementById("urlit").innerHTML = getKesko(eanlist);
+        // document.getElementById("urlit").innerHTML = getKesko(eanlist);
+
+        document.getElementById("urlit").innerHTML = ""; // tyhjätään ohjeteksti
+
+        for (let index = 0; index < eanlist.length; index++) {
+          document.getElementById("urlit").innerHTML += `
+          <div class="tuotekuvadiv"><a href="${keskourl}${eanlist[index]}"><img src="${keskourl}${eanlist[index]}" class="tuotekuva" title="${eanlist[index]}" download="${eanlist[index]}"></a><p class="tuotekuvaean">${eanlist[index]}</p></div>
+            
+            <button onclick="download('${eanlist[index]}, ${keskourl}${eanlist[index]}')" id="latausnappi${eanlist[index]}" title="Tallenna ean-koodilla nimettynä ${eanlist[index]}.png">Lataa</button>
+            `;   
+        }
+
       }
 
       function transferTokmanni() {
+        console.log("klikattu tokmannia");
         let eanlist = document.getElementById("eanlist").value.split("\n");
         document.getElementById("urlit").innerHTML = getTokmanni(eanlist);
       }
+
+
+      function transferMinimani() {
+        console.log("klikattu minimania");
+        let eanlist = document
+          .getElementById("eanlist") // hakee eanlist-id:llä olevasta
+          .value.split("\n") // sisällön ja jakaa sen riveille
+          .map((x) => x.trim()); // trimmaa välilyönnit pois
+
+
+        // disabloidaan eanlist-textarea ja hakunappi siksi aikaa kun haetaan tietoja
+        // document.getElementById("eanlist").setAttribute("disabled", "disabled");
+        // document.getElementById("button-tammer").setAttribute("disabled", "disabled");
+        // document.getElementById("button-kesko").setAttribute("disabled", "disabled");
+        // document.getElementById("loader").style.display = "flex";
+
+        eanlist = document.getElementById("eanlist").value.split("\n");
+        let tulokset = "";
+
+        for (let i = 0; i < eanlist.length; i++) {
+          var image = new Image();
+                  image.onload = function() {
+                      // image exists and is loaded
+                      // document.body.appendChild(image);
+                      tulokset += `
+                      <a href="https://www.minimani.fi/search/?q=${eanlist[i]}"><img src="https://www.minimani.fi/media/catalog/product/${eanlist[i].substring(0,1)}/${eanlist[i].substring(1,2)}/${eanlist[i]}.jpg" class="tuotekuva" title="${eanlist[i]}" download="${eanlist[i]}.jpg"></a>
+                      `;        
+                      document.getElementById("urlit").innerHTML = tulokset;
+                  }
+                  image.onerror = function() {
+                      // image did not load
+                      // var err = new Image();
+                      // err.src = '/error.png';
+                      // document.body.appendChild(err);
+                      tulokset += `
+                      <a href="https://www.minimani.fi/search/?q=${eanlist[i]}"><img src="https://www.minimani.fi/media/catalog/product/${eanlist[i].substring(0,1)}/${eanlist[i].substring(1,2)}/${eanlist[i]}_1.jpg" class="tuotekuva" title="${eanlist[i]}" download="${eanlist[i]}.jpg"></a>
+                      `;        
+                      document.getElementById("urlit").innerHTML = tulokset;
+                  }
+                  image.src = `https://www.minimani.fi/media/catalog/product/${eanlist[i].substring(0,1)}/${eanlist[i].substring(1,2)}/${eanlist[i]}.jpg`;
+        }
+      }
+      
 
       function transferTammer() {
         let eanlist = document
@@ -80,10 +140,11 @@
           source: "tammertukku",
           eanlist: eanlist,
         };
-        // kuvatJaKuvauksetTaulukko tulee image_services.js:stä. Siellä on nuo .ean, .description yms määritelty
+        // kuvatJaKuvauksetTaulukko sisältö tulee image_services.js:stä. Siellä on nuo .ean, .description yms määritelty
         // getImages-funktio löytyy services/image_services.js:stä (huom! EI modules/getimages.js)
+        // requestObjektissa menee ylempänä määritellyt "tammertukku" ja enarilista. KuvatjaKuvaukset.... on se mihin funktion resolvaus palautuu
         getImages(requestObj, (kuvatJaKuvauksetTaulukko) => {
-          console.log(kuvatJaKuvauksetTaulukko);
+          // console.log(kuvatJaKuvauksetTaulukko);
           // document.getElementById("urlit").innerHTML = getTammer(eanlist);
 
           // poistetaan eanlist-textarean ja button-tammerin disablointi
@@ -93,19 +154,42 @@
           document.getElementById("loader").style.display = "none";
 
           document.getElementById("urlit").innerHTML = ""; // tyhjätään ohjeteksti pois
-          for (
-            let index = 0; index < kuvatJaKuvauksetTaulukko.length; index++) {
-            document.getElementById("urlit").innerHTML += `<div class="tuotekuvadiv">
-                  <p class="product-title">${kuvatJaKuvauksetTaulukko[index].title}</p>
-                  <p class="tuotekuvaean" onClick="this.select();">${kuvatJaKuvauksetTaulukko[index].ean}</p>
-                  <p class="tuotekuvaean" onClick="this.select();">${kuvatJaKuvauksetTaulukko[index].description}</p>
-                  <p class="tuotekuvaean" onClick="this.select();">Tammerin tuotenumero: ${kuvatJaKuvauksetTaulukko[index].productnumber}</p>
-                  <a href="https://www.${kuvatJaKuvauksetTaulukko[index].images[0]}" target="_blank">
-                  <img src="https://www.${kuvatJaKuvauksetTaulukko[index].images[0]}" class="tuotekuva" title="${kuvatJaKuvauksetTaulukko[index].images[0]}" download="${kuvatJaKuvauksetTaulukko[index].ean}"></a>
-                  
-                  <button onclick="download('${kuvatJaKuvauksetTaulukko[index].ean}, https://www.${kuvatJaKuvauksetTaulukko[index].images[0]}')" id="latausnappi${kuvatJaKuvauksetTaulukko[index].ean}" title="${kuvatJaKuvauksetTaulukko[index].ean}.jpg">Lataa</button>
-                  
-                  `;
+          for (let index = 0; index < kuvatJaKuvauksetTaulukko.length; index++) {
+            
+            //jos kuvia löytyy enarilla, tulostetaan ne
+            if (!kuvatJaKuvauksetTaulukko[index].title.includes("Ei löydy")) {
+              document.getElementById("urlit").innerHTML += `<div class="tuotekuvadiv">
+                <p class="product-title">${kuvatJaKuvauksetTaulukko[index].title}</p>
+                <p class="tuotekuvaean" onClick="this.select();">${kuvatJaKuvauksetTaulukko[index].ean}</p>
+                <a href="https://www.minimani.fi/search/?q=${kuvatJaKuvauksetTaulukko[index].ean}" target="_blank">Katso tuote Minimani.fi:ssä</a>
+                <p class="tuotekuvaean" onClick="this.select();">${kuvatJaKuvauksetTaulukko[index].description}</p>
+                <p class="tuotekuvaean" onClick="this.select();">Tammerin tuotenumero: ${kuvatJaKuvauksetTaulukko[index].productnumber}</p>
+                <a href="https://www.${kuvatJaKuvauksetTaulukko[index].images[0]}" target="_blank">
+                <img src="https://www.${kuvatJaKuvauksetTaulukko[index].images[0]}" class="tuotekuva" title="${kuvatJaKuvauksetTaulukko[index].images[0]}" download="${kuvatJaKuvauksetTaulukko[index].ean}"></a>
+                
+                
+                <button onclick="download('${kuvatJaKuvauksetTaulukko[index].ean}, https://www.${kuvatJaKuvauksetTaulukko[index].images[0]}')" id="latausnappi${kuvatJaKuvauksetTaulukko[index].ean}" title="Tallenna ean-koodilla nimettynä ${kuvatJaKuvauksetTaulukko[index].ean}.jpg">Lataa</button>
+                
+                `;
+            }
+                  //jos ean-koodilla ei löytynyt kuvaa, näytetään tuotenumerolla löytynyt kuva
+                  if (kuvatJaKuvauksetTaulukko[index].title.includes("Ei löydy")) {
+                    document.getElementById("urlit").innerHTML += `
+                    <div class="tuotekuvadiv">
+                <p class="product-title">${kuvatJaKuvauksetTaulukko[index].title}</p>
+                <p class="tuotekuvaean" onClick="this.select();">${kuvatJaKuvauksetTaulukko[index].ean}</p>
+                <a href="https://www.minimani.fi/search/?q=${kuvatJaKuvauksetTaulukko[index].ean}" target="_blank">Katso tuote Minimani.fi:ssä</a>
+                <p class="tuotekuvaean" onClick="this.select();">${kuvatJaKuvauksetTaulukko[index].description}</p>
+                <p class="tuotekuvaean" onClick="this.select();">Tammerin tuotenumero: ${kuvatJaKuvauksetTaulukko[index].productnumber}</p>
+                    <a href="https://www.${kuvatJaKuvauksetTaulukko[index].productnumberimage}" target="_blank">
+                      <img src="https://www.${kuvatJaKuvauksetTaulukko[index].productnumberimage}" class="tuotekuva" title="${kuvatJaKuvauksetTaulukko[index].productnumberimage}" download="${kuvatJaKuvauksetTaulukko[index].productnumberimage}"></a>
+                      
+                      <button onclick="download('${kuvatJaKuvauksetTaulukko[index].ean}, https://www.${kuvatJaKuvauksetTaulukko[index].productnumberimage}')" id="latausnappi${kuvatJaKuvauksetTaulukko[index].ean}" title="Tallenna ean-koodilla nimettynä ${kuvatJaKuvauksetTaulukko[index].ean}.jpg">Lataa</button>
+                      `;
+                      
+                    }
+                      
+
 
             // tarkistetaan onko kuvia enemmän kuin yksi per enari
             if (kuvatJaKuvauksetTaulukko[index].images.length > 0) {
@@ -118,7 +202,7 @@
                   "urlit"
                 ).innerHTML += `<div class="tuotelisakuvadiv"><a href="https://www.${kuvatJaKuvauksetTaulukko[index].images[x]}" target="_blank">
                         <img src="https://www.${kuvatJaKuvauksetTaulukko[index].images[x]}" class="tuotelisakuva" title="${kuvatJaKuvauksetTaulukko[index].images[x]}" download="${kuvatJaKuvauksetTaulukko[index].ean}_${x+1}"></a>
-                            <button onclick="download('${kuvatJaKuvauksetTaulukko[index].ean}_${x+1}, https://www.${kuvatJaKuvauksetTaulukko[index].images[x]}')" id="latausnappi" title="${kuvatJaKuvauksetTaulukko[index].ean}_${x+1}.jpg">Lataa lisäkuva</button><br></div>
+                            <button onclick="download('${kuvatJaKuvauksetTaulukko[index].ean}_${x+1}, https://www.${kuvatJaKuvauksetTaulukko[index].images[x]}')" id="latausnappi${kuvatJaKuvauksetTaulukko[index].ean}_${x+1}" title="${kuvatJaKuvauksetTaulukko[index].ean}_${x+1}.jpg">Lataa lisäkuva</button><br></div>
                         `;
               }
             }
@@ -143,16 +227,17 @@
 
               //piilota latauspallura
               document.getElementById("loader").style.display = "none";
-              // Allaolevat hienot kikkareet ei oikei toiminu usean napin kans
-              // document.getElementById("latausnappi").innerHTML = "VALMIS";
-              // document.getElementById("latausnappi").style.backgroundColor = "#a8d5a8";
+              // allaolevaa enari-muuttujaa voi käyttää jo tässä, miks???
+              console.log("Klikatun napin nimi:" + "latausnappi"+enari);
+              document.getElementById(`latausnappi${enari}`).innerHTML = "VALMIS";
+              document.getElementById(`latausnappi${enari}`).style.backgroundColor = "#a8d5a8";
 
               resolve(); // sanoo että nyt päätetään
             }
           };
           let obj = { enarilomakkeelta: eanCode, urlilomakkeelta: url }; //nämä välittyy main_controllerille
 
-          console.log(obj);
+          // console.log(obj);
     // jaetaan ean ja url kahdeksi muuttujaksi
     // ku jostain syystä obj-objektin sisältö on yhtenä pötkönä, pelkkä pilkku välis
     var index = obj.enarilomakkeelta.indexOf(",");  // Gets the first index where a space occurs

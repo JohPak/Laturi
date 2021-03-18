@@ -32,6 +32,7 @@ span {
   display: flex;
   flex-wrap: wrap;
   padding: 20px;
+  width: 100vw;
 }
 
 button {
@@ -56,12 +57,13 @@ a {
   max-width: 150px;
   min-height: 150px;
   margin-bottom: 15px;
+  border-top: 1px solid #7aa0b7;
 }
 .product-title {
   text-align: left;
   font-weight: 600;
   margin: 0;
-  border-top: 1px solid #7aa0b7;
+  /* border-top: 1px solid #7aa0b7; */
   padding-top: 11px;
   user-select: all;
 }
@@ -75,11 +77,20 @@ a {
   padding-right: 10px;
 }
 .tuotelisakuva {
-  max-width: 70px;
-  max-height: 70px;
-  padding-right: 10px;
+  max-width: 100px;
+  max-height: 100px;
   box-sizing: border-box; /*ignooraa paddingit jotta koko pysyy samana*/
-  padding-bottom: 14px;
+  padding-bottom: 4px;
+  padding-top: 10px;
+}
+.tuotelisakuvadiv {
+  max-width: 120px;
+  margin-right: 5px;
+  margin-bottom: 15px;
+}
+
+.tuotelisakuvadiv button {
+  max-width: 100px;
 }
 .tuotekuvaean {
   text-align: left;

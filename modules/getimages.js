@@ -1,13 +1,28 @@
 const getKesko = function (eanlist) {
 
+    // TÄMÄ EI OO KÄYTÖSSÄ 
     const keskourl = "https://public.keskofiles.com/f/k-ruoka/product/";
-    let finals = "";
+    // let finals = "";
+    let finalsObj = {
+        ean: "",
+        url: ""
+    };
+
+    //TÄMÄ PALAUTTAA KUVAT JA LINKIT
+    // for (let index = 0; index < eanlist.length; index++) {
+    //     finals += `<div class="tuotekuvadiv"><a href="${keskourl}${eanlist[index]}"><img src="${keskourl}${eanlist[index]}" class="tuotekuva" title="${keskourl}${eanlist[index]}" download="${eanlist[index]}"><p class="tuotekuvaean">${eanlist[index]}</p></div>        
+    //     `;
+    // }
+
+    // MALLI: myObject['propA' + i] = 'foo';
 
     for (let index = 0; index < eanlist.length; index++) {
-        finals += "<div class=\"tuotekuvadiv\"><a href=\"" + keskourl + eanlist[index] + "\"><img src=\"" + keskourl + eanlist[index] + "\" class=\"tuotekuva\" title=\"" + keskourl + eanlist[index] + "\" download=\"" + eanlist[index] + "\"><p class=\"tuotekuvaean\">" + eanlist[index] + "<\/p><\/div>";
+        finalsObj['ean'] = eanlist[index];
+        finalsObj['url'] = keskourl + eanlist[index]
     }
     // console.log(finals);
-    return finals;
+    // console.log(finalsObj);
+    return finalsObj;
 
 }
 
@@ -22,6 +37,25 @@ const getTokmanni = function (eanlist) {
     // console.log(finals);
     return finals;
 
+}
+
+const getTammerUrl = function(ean) {
+    
+    const tammerurl = "tammerbrands24h.fi/images/products/";
+    let url_eka = "";
+    let url_toka = "";
+    let url_tuotenro = ean.substr(6,6); // tammerin tuotenumero
+
+    // enarin eka pala
+    //https://www.tammerbrands24h.fi/images/products/30/3/303624.jpg
+    url_eka = url_tuotenro.substr(0,2);
+    
+    // enarin toka pala
+    //https://www.tammerbrands24h.fi/images/products/30/3/303624.jpg
+    url_toka = url_tuotenro.substr(2,1);
+    
+    //palauttaa kokonaisen urlin
+    return(tammerurl+url_eka+"/"+url_toka+"/"+url_tuotenro+".jpg");
 }
 
 const getTammer = function (eanlist) {
@@ -81,18 +115,18 @@ const getTammer = function (eanlist) {
         }
     }
 
+    // TÄMÄ FUNKTIO EI TAIDA OLLA KÄYTÖS
     // muodostetaan a href-linkki
-    for (let index = 0; index < fullurls.length; index++) {
-        // finals += "<a href=\"" + fullurls[index] + "\" download=\"" + eanlist[index] + "\"><div class=\"tuotekuvadiv\"><img class=\"tuotekuva\" title=\"" + fullurls[index] + "\" src=\"" + fullurls[index] + "\" download=\"" + eanlist[index] + "\"><p class=\"tuotekuvaean\">" + eanlist[index] + "<\/p><\/div><\/a>";
-        
-        finals += `<a href="${fullurls[index]}" download="${eanlist[index]}"><div class="tuotekuvadiv"><img class="tuotekuva" title="${fullurls[index]}" src="${fullurls[index]}" download="${eanlist[index]}"><p class="tuotekuvaean">${eanlist[index]}</p></div></a>`;
-    }
+    // for (let index = 0; index < fullurls.length; index++) { 
+    //     finals += `<a href="${fullurls[index]}" download="${eanlist[index]}"><div class="tuotekuvadiv"><img class="tuotekuva" title="${fullurls[index]}" src="${fullurls[index]}" download="${eanlist[index]}"><p class="tuotekuvaean">${eanlist[index]}</p></div></a>`;
+    // }
 
     return finals;
 
 }
 
 const getImages = function (req, cb) {
+    // console.log("getimages.js:stä:" + cb);
     let url = "/get";
     let x = new XMLHttpRequest();
     x.onreadystatechange = () => {
@@ -103,5 +137,9 @@ const getImages = function (req, cb) {
     x.open("POST", url, true);
     x.setRequestHeader("Content-Type", "application/json");
     x.send(JSON.stringify(req));
+    // console.log(x);
 }
 
+
+
+module.exports.getTammerUrl = getTammerUrl;

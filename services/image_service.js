@@ -2,6 +2,7 @@
 const https = require("https"); //noden valmis kirjasto
 const querystring = require('querystring');
 const HTMLParser = require('node-html-parser');
+const { getTammerUrl } = require("../modules/getimages");
 
 const tammerOptions = {
     hostname: 'tammerbrands24h.fi',
@@ -13,6 +14,7 @@ const tammerOptions = {
     }
 }
 
+//tämä parsettaa tiedon tammerin sivulta ja lähettää sen resolvella kutsujalle
 function makeTammerRequest(ean) {
     let postData = querystring.stringify({'q': ean});
     return new Promise((resolve, reject) => {
@@ -27,32 +29,37 @@ function makeTammerRequest(ean) {
             });
             res.on("close", () => {
                 let root = HTMLParser.parse(data.join(""));
+                console.log(root);
                 let description = root.querySelector("p").innerText;
                 let title = root.querySelector("h2").innerText;
                 let imageForms = root.querySelectorAll("form").slice(1);
                 let productnumber = ean.substr(6,6); // tammerin tuotenumero
+                let productnumberimage = "";
+
                 if (productnumber.substr(0,1) == "0") {// mikäli tuotenumeron eka nro on nolla..
                     productnumber = productnumber.substr(1,5); }// ..poistaa sen
-                let uris = [];
+                let urls = [];
                 if (title == "Hyvä Tammer Brands asiakas,") // jos haulla ei tullu mitään
                 {
-                    title = "Ei löydy"
-                    description = "-";
+                    title = "Ei löydy ean-koodilla, haetaan tuotenumerolla: " + productnumber;
+                    description = "";
+                    productnumberimage = getTammerUrl(ean);
                 }
                 else {
                     for (let imageForm of imageForms) { // jos haulla tuli tuloksia, hakee kaikki, myös lisäkuvat
                         let attr = imageForm.getAttribute("action");
-                        uris.push(`tammerbrands24h.fi/${attr}`);
+                        urls.push(`tammerbrands24h.fi/${attr}`);
                     }
                 }
 
                 // PALAUTTAA KUTSUJALLE (makeimagerequest.then) OBJEKTIN
                 resolve({
-                    images: uris,
+                    images: urls,
                     description: description,
                     title: title,
                     ean: ean,
-                    productnumber: productnumber
+                    productnumber: productnumber,
+                    productnumberimage: productnumberimage,
                 });
                 resolve(data.join(""));
             });
@@ -80,10 +87,15 @@ function getImages(source, eanlist) {
                 let p = await makeKeskoRequest(ean);
                 products.push(p);
             }
+            else if (source == "minimani") {
+                let p = await makeMinimaniRequest(ean);
+                products.push(p);
+            }
         }
         resolve(products);
     })
 }
 
 
-module.exports.getImages = getImages;
+// module.exports.getImages = getImages;
+exports.getImages = getImages;

@@ -28,6 +28,15 @@ app.post('/lataa', main_controller.downloadImage);
 app.post('/lataatammer', main_controller.downloadImageTammer);
 app.post('/get', main_controller.get_images);
 
+// kaikki kuvat vois tallentaa palvelimelle yhteen kansioon ja ladata kerralla
+// Download a file from NodeJS Server using Express
+// /Users/johannapakkala/Projects/Kuvalataaja/Laturi/upload-folder/dramaticpenguin.MOV
+app.get('/download', function(req, res){
+  // const file = `${__dirname}/upload-folder/dramaticpenguin.MOV`;
+  const file = `${__dirname}/controllers/upload-folder/`;
+  res.download(file); // Set disposition and send it.
+});
+
 // app.get('/', (req, res) => {
 //     // Ohjataan juureen tuleva liikenne näyttämään main.html-tiedostoa
 //     // res.sendFile(__dirname+"/views/main.html");

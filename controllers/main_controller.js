@@ -50,6 +50,10 @@ const downloadImageTammer = (req, res, next) => {
     options = {
         url: latausurli,
         dest: "/Users/johannapakkala/Dropbox/nettikuvat/" + enari + ".jpg"      // will be saved to /path/to/dest/photo.jpg
+
+        // TESTI palvelimelle tallennusta varten
+        // path: '/Users/johannapakkala/Projects/Kuvalataaja/Laturi/controllers/upload-folder/6410413036246.jpg'
+        // dest: `${__dirname}/upload-folder/${enari}.jpg`
         // dest: `/Users/johannapakkala/12345677.png`      // will be saved to /path/to/dest/photo.jpg
         // HUOMAA ERILAISET HIPSUT, MIKÄLI KÄYTÄT MUUTTUJAA DOLLARILLA
     }
